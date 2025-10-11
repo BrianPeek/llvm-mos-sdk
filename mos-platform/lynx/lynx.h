@@ -1,66 +1,37 @@
-// Copyright 2024 LLVM-MOS Project
+// Copyright 2025 LLVM-MOS Project
 // Licensed under the Apache License, Version 2.0 with LLVM Exceptions.
 // See https://github.com/llvm-mos/llvm-mos-sdk/blob/main/LICENSE for license
 // information.
 
 // Originally from cc65. Modified from original version.
 
-// clang-format off
-
-/*****************************************************************************/
-/*                                                                           */
-/*                                  lynx.h                                   */
-/*                                                                           */
-/*                     Lynx system-specific definitions                      */
-/*                                                                           */
-/*                                                                           */
-/*                                                                           */
-/* (C) 2003      Shawn Jefferson                                             */
-/*                                                                           */
-/* Adapted with many changes Ullrich von Bassewitz, 2004-10-09               */
-/*                                                                           */
-/*                                                                           */
-/*                                                                           */
-/* This software is provided 'as-is', without any expressed or implied       */
-/* warranty.  In no event will the authors be held liable for any damages    */
-/* arising from the use of this software.                                    */
-/*                                                                           */
-/* Permission is granted to anyone to use this software for any purpose,     */
-/* including commercial applications, and to alter it and redistribute it    */
-/* freely, subject to the following restrictions:                            */
-/*                                                                           */
-/* 1. The origin of this software must not be misrepresented; you must not   */
-/*    claim that you wrote the original software. If you use this software   */
-/*    in a product, an acknowledgment in the product documentation would be  */
-/*    appreciated but is not required.                                       */
-/* 2. Altered source versions must be plainly marked as such, and must not   */
-/*    be misrepresented as being the original software.                      */
-/* 3. This notice may not be removed or altered from any source              */
-/*    distribution.                                                          */
-/*                                                                           */
-/*****************************************************************************/
-
 #ifndef _LYNX_H
 #define _LYNX_H
 
-/* Check for errors */
-#if !defined(__LYNX__)
-#  error This module may only be used when compiling for the Lynx game console!
+#include "video.h"
+#include "joystick.h"
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
-/* Masks for joy_read */
-#define JOY_UP_MASK             0x80
-#define JOY_DOWN_MASK           0x40
-#define JOY_LEFT_MASK           0x20
-#define JOY_RIGHT_MASK          0x10
-#define JOY_BTN_1_MASK          0x01
-#define JOY_BTN_2_MASK          0x02
-
-#define JOY_BTN_A_MASK          JOY_BTN_1_MASK
-#define JOY_BTN_B_MASK          JOY_BTN_2_MASK
-
-#define JOY_BTN_A(v)            ((v) & JOY_BTN_A_MASK)
-#define JOY_BTN_B(v)            ((v) & JOY_BTN_B_MASK)
+/* Color definitions */
+#define COLOR_TRANSPARENT       0x00
+#define COLOR_BLACK             0x01
+#define COLOR_RED               0x02
+#define COLOR_PINK              0x03
+#define COLOR_LIGHTGREY         0x04
+#define COLOR_GREY              0x05
+#define COLOR_DARKGREY          0x06
+#define COLOR_BROWN             0x07
+#define COLOR_PEACH             0x08
+#define COLOR_YELLOW            0x09
+#define COLOR_LIGHTGREEN        0x0A
+#define COLOR_GREEN             0x0B
+#define COLOR_PURPLE            0x0C
+#define COLOR_BLUE              0x0D
+#define COLOR_LIGHTBLUE         0x0E
+#define COLOR_WHITE             0x0F
 
 /* Define Hardware */
 #include <_mikey.h>
@@ -75,5 +46,22 @@
 #include <_suzy.h>
 #define SUZY        (*(volatile struct __suzy*)0xFC00)
 
-/* End of lynx.h */
+#define BLOCKSIZE_128K  0x200
+#define BLOCKSIZE_256K  0x400
+#define BLOCKSIZE_512K  0x800
+
+#define _SET_CART_INFO_IMPL(b0, name, mfr, version, rotation) \
+    asm(".global __BANK0BLOCKSIZE__ \n __BANK0BLOCKSIZE__ = " #b0); \
+    asm(".global __VERSION__ \n __VERSION__ = " #version); \
+    asm(".global __ROTATION__ \n __ROTATION__ = " #rotation); \
+    asm(".global __cartend \n .global __cartmfr \n .global __cartname"); \
+    asm(".section .cartnamemfr,\"a\" \n __cartname: \n .asciz " #name " \n __cartmfr: \n .asciz " #mfr " \n __cartend:")
+
+#define SET_CART_INFO(b0, name, mfr, version, rotation) \
+    _SET_CART_INFO_IMPL(b0, name, mfr, version, rotation);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
