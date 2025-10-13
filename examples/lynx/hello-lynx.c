@@ -16,6 +16,18 @@ const unsigned char sprite[] = {
     0xBB,0xF0,0x03,0xB9,0xE0,0x03,0xB8,0xC0,0x00,
 };
 
+const unsigned char sfx[] = {
+	0x84, 0x00, 0x00, 0x01, 0x28, 0x00, // SET_INSTR
+	0x85, 0x6F, 0x80, 0x3F, // PLAY
+	0x85, 0x7F, 0x80, 0x3F, // PLAY
+	0x85, 0x8F, 0x80, 0x3F, // PLAY
+	0x85, 0x7F, 0x80, 0x3F, // PLAY
+	0x85, 0x6F, 0x80, 0x3F, // PLAY
+	0x85, 0x6F, 0x80, 0x3F, // PLAY
+	0x85, 0x6F, 0x80, 0x3F, // PLAY
+	0x00 // STOP
+};
+
 typedef struct SPRITE {
 	SCB_REHV_PAL scb;
 	signed char hv;
@@ -25,7 +37,7 @@ typedef struct SPRITE {
 // setup a custom cartridge header
 SET_CART_INFO(
     BLOCKSIZE_256K,
-    "Lynx Sprite Sample             ",
+    "Lynx Example                   ",
     "LLVM-MOS       ",
     1, 0);
 
@@ -152,6 +164,11 @@ void handle_input(unsigned short joy)
         stats = !stats;
     }
 
+	if(JOY_BTN_OPT2(joy) && !JOY_BTN_OPT2(lastJoy))
+    {
+        lynx_audio_play(0, sfx);
+    }
+
 	lastJoy = joy;
 }
 
@@ -161,6 +178,8 @@ int main()
 	lynx_video_setframerate(60);
 	asm("cli");
 	while (lynx_video_busy()) { }
+
+	lynx_audio_init();
 
 	head = init_sprite();
 	end = head;

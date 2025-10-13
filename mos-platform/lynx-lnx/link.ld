@@ -24,11 +24,13 @@ PROVIDE(__cartmfr  = 32);
 ASSERT(__cartmfr - __cartname == 32, "Cart name must be 31 characters")
 ASSERT(__cartend - __cartmfr  == 16, "Cart manufacturer must be 15 characters")
 ASSERT(__ROTATION__ >=0 && __ROTATION__ <= 2, "Invalid rotation value")
+ASSERT(SIZEOF(.secbootldr) == 151, "Secondary bootloader is not 151 bytes")
+ASSERT(SIZEOF(.directory) % 8 == 0, "Directory is not a multiple of 8 bytes")
 
 MEMORY {
     lnxheader (r)  : ORIGIN = 0x10000,    LENGTH = 64
-    secbootldr (r) : ORIGIN = 0xfb68,     LENGTH = 151
-    directory (r)  : ORIGIN = 0x00cb,     LENGTH = 8
+    secbootldr (r) : ORIGIN = 0xfb68,     LENGTH = SIZEOF(.secbootldr)
+    directory (r)  : ORIGIN = 0x00cb,     LENGTH = SIZEOF(.directory)
     zp (rw)        : ORIGIN = __rc31 + 1, LENGTH = 0x100 - (__rc31 + 1)
     ram (rw)       : ORIGIN = 0x0200,     LENGTH = 0xc038 - 0x200
 }
@@ -55,7 +57,13 @@ SECTIONS {
         INCLUDE directory.ld
     } >directory
 
-    INCLUDE text.ld
+    .text : {
+        INCLUDE text-sections.ld
+        KEEP(*(.irq_begin))
+        KEEP(*(SORT_BY_INIT_PRIORITY(.irq.* .irq)))
+        KEEP(*(.irq_end))
+    } >c_readonly
+
     INCLUDE rodata.ld
     INCLUDE data.ld
     INCLUDE zp.ld

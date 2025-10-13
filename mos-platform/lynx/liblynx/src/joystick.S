@@ -12,7 +12,7 @@
 .global lynx_joy_read
 lynx_joy_read:
         lda     SWITCHES
-        and     #0x01
+        and     #$01
         tax
         lda     JOYSTICK
         rts

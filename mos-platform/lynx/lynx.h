@@ -8,6 +8,7 @@
 #ifndef _LYNX_H
 #define _LYNX_H
 
+#include "audio.h"
 #include "video.h"
 #include "joystick.h"
 
@@ -34,7 +35,7 @@ extern "C" {
 #define COLOR_WHITE             0x0F
 
 /* Define Hardware */
-#include <_mikey.h>
+#include <mikey.h>
 #define MIKEY (*(volatile struct __mikey *)0xFD00)
 
 #define _MIKEY_TIMERS (*(volatile struct _mikey_all_timers *) 0xFD00)  // mikey_timers[8]
@@ -43,7 +44,7 @@ extern "C" {
 #define _UART_TIMER (*(volatile struct _mikey_timer *) 0xFD14)         // timer4 (UART)
 #define _VIDDMA (*(volatile unsigned int *) 0xFD92)                    // dispctl/viddma
 
-#include <_suzy.h>
+#include <suzy.h>
 #define SUZY        (*(volatile struct __suzy*)0xFC00)
 
 #define BLOCKSIZE_128K  0x200

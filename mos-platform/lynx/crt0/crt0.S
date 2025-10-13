@@ -11,6 +11,8 @@
 ; ------------------------------------------------------------------------
 ; Mikey and Suzy init data, reg offsets and data
 
+.zeropage IntVal
+
 .rodata
 
 SuzyInitData:
@@ -95,23 +97,30 @@ sloop:  ldy     SuzyInitReg,x
         sta     __sprsys
 
 ; Init default IRQ stub
-        lda     #<IRQStub
-        ldx     #>IRQStub
+        lda     #<__default_irq
+        ldx     #>__default_irq
         sei
         sta     INTVECTL
         stx     INTVECTH
 
         cli
 
-.text
-
-; Default IRQ
-IRQStub:
+.section .irq_begin,"ax",@progbits
+.global __default_irq
+__default_irq:
         phy
         phx
         pha
+
+; load the current bit flags and save for later
         lda     INTSET
+        sta     IntVal
+
+.section .irq_end,"ax",@progbits
+; reset interrupt flags based on store value at start of irq
+        lda     IntVal
         sta     INTRST
+
         pla
         plx
         ply

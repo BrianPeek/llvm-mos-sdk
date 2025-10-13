@@ -1,2 +1,2 @@
-add_executable(sprites sprites.c)
-install_example(sprites)
+add_executable(hello-lynx hello-lynx.c)
+install_example(hello-lynx)

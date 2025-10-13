@@ -5,8 +5,8 @@ if(NOT CMAKE_CROSSCOMPILING)
 endif()
 
 install(FILES
-  _mikey.h
-  _suzy.h
+  mikey.h
+  suzy.h
   lynx.h
 TYPE INCLUDE)
 
@@ -37,9 +37,11 @@ target_link_libraries(lynx-crt0-o PRIVATE lynx-c)
 # build liblynx
 
 add_platform_library(lynx-c
+  liblynx/src/audio.S
   liblynx/src/video.S
   liblynx/src/joystick.S
   liblynx/src/cart.S
+  liblynx/src/audio.S
 )
 
 target_compile_options(lynx-c PUBLIC -mcpu=mos65c02)
@@ -47,6 +49,7 @@ target_include_directories(lynx-c PRIVATE .)
 target_link_libraries(lynx-c PRIVATE common-asminc)
 
 install(FILES
+  liblynx/include/audio.h
   liblynx/include/video.h
   liblynx/include/joystick.h
 TYPE INCLUDE)

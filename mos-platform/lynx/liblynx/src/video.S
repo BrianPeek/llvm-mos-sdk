@@ -3,7 +3,7 @@
 ; See https://github.com/llvm-mos/llvm-mos-sdk/blob/main/LICENSE for license
 ; information.
 
-; Originally from cc65. Modified from original version.
+; Portions originally from cc65. Modified from original version.
 
 .include "lynx.inc"
 .include "imag.inc"
@@ -111,14 +111,6 @@ lynx_video_init:
         sta     COLLOFFL
         lda     #$FF
         sta     COLLOFFH
-; setup the IRQ
-        lda     #<irq
-        ldx     #>irq
-        sei
-        sta     INTVECTL
-        stx     INTVECTH
-
-        cli
 
         rts
 
@@ -333,34 +325,6 @@ lynx_video_setdrawpage:
         sta     DRAWPAGEL
         stx     DRAWPAGEH
         rts
-
-irq:
-        phy
-        phx
-        pha
-
-        lda     INTSET          ; Poll all pending interrupts
-        and     #VBL_INTERRUPT
-        beq     0f             ; Exit if not a VBL interrupt
-
-        sta     INTRST
-        lda     SWAPREQUEST
-        beq     0f
-        lda     DRAWPAGE
-        jsr     lynx_video_setviewpage
-        lda     DRAWPAGE
-        eor     #1
-        sta     DRAWPAGE
-        jsr     lynx_video_setdrawpage
-        stz     SWAPREQUEST
-
-0:
-        pla
-        plx
-        ply
-
-        clc
-        rti
 
 ; ------------------------------------------------------------------------
 ; lynx_video_setcolor: Set the drawing color (in A).
@@ -733,3 +697,22 @@ font:
         .byte $FF, $C3, $F3, $F3, $F3, $F3, $F3, $C3  ;253
         .byte $E7, $E7, $E7, $E7, $81, $C3, $E7, $FF  ;254
         .byte $FF, $DF, $9F, $01, $01, $9F, $DF, $FF  ;255
+
+
+.section .irq.200,"ax",@progbits
+.global __irq_video
+__irq_video:
+        lda     INTSET          ; Poll all pending interrupts
+        and     #VBL_INTERRUPT
+        beq     0f             ; Exit if not a VBL interrupt
+
+        lda     SWAPREQUEST
+        beq     0f
+        lda     DRAWPAGE
+        jsr     lynx_video_setviewpage
+        lda     DRAWPAGE
+        eor     #1
+        sta     DRAWPAGE
+        jsr     lynx_video_setdrawpage
+        stz     SWAPREQUEST
+0:

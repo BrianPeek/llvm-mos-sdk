@@ -19,3 +19,10 @@ unsigned short __zp _FileFileLen;
 unsigned char  __zp _FileCurrBlock;
 unsigned short __zp _FileBlockByte;
 unsigned short __zp _FileDestPtr;
+
+unsigned char  __zp SndSema;
+unsigned short __zp SndPtrTmp;
+unsigned short __zp SndTmp;  
+unsigned short __zp SndEnvPtr;
+
+unsigned char  __zp IntVal;
