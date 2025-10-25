@@ -9,8 +9,9 @@
 #define _LYNX_H
 
 #include "audio.h"
-#include "video.h"
+#include "cart.h"
 #include "joystick.h"
+#include "video.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -60,6 +61,13 @@ extern "C" {
 
 #define SET_CART_INFO(b0, name, mfr, version, rotation) \
     _SET_CART_INFO_IMPL(b0, name, mfr, version, rotation);
+
+#define DO_PRAGMA(x) _Pragma(#x)
+#define START_SEGMENT(n) DO_PRAGMA(clang section \
+	text=".segment" #n ".text" \
+	data=".segment" #n ".data" \
+	bss=".segment" #n ".bss" \
+	rodata=".segment" #n ".rodata")
 
 #ifdef __cplusplus
 }

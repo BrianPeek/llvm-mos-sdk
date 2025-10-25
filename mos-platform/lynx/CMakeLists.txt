@@ -38,10 +38,9 @@ target_link_libraries(lynx-crt0-o PRIVATE lynx-c)
 
 add_platform_library(lynx-c
   liblynx/src/audio.S
-  liblynx/src/video.S
-  liblynx/src/joystick.S
   liblynx/src/cart.S
-  liblynx/src/audio.S
+  liblynx/src/joystick.S
+  liblynx/src/video.S
 )
 
 target_compile_options(lynx-c PUBLIC -mcpu=mos65c02)
@@ -50,6 +49,7 @@ target_link_libraries(lynx-c PRIVATE common-asminc)
 
 install(FILES
   liblynx/include/audio.h
-  liblynx/include/video.h
+  liblynx/include/cart.h
   liblynx/include/joystick.h
+  liblynx/include/video.h
 TYPE INCLUDE)

@@ -1,21 +1,21 @@
 #include <lynx.h>
+
 #include <stdbool.h>
 #include <stdlib.h>
-#include <string.h>
 
 #define SCREEN_W (160)
 #define SCREEN_H (102)
-#define LETTER_W (4)
-#define LETTER_H (7)
 
 #define SPR_W (8)
 #define SPR_H (8)
+#define SPR_MAX (64)
 
 const unsigned char sprite[] = {
     0x03,0xB8,0xC0,0x03,0xB9,0xE0,0x03,0xBB,0xF0,0x03,0x3C,0x00,0x03,0x3C,0x00,0x03,
     0xBB,0xF0,0x03,0xB9,0xE0,0x03,0xB8,0xC0,0x00,
 };
 
+// SFX produced in "Chipper" format
 const unsigned char sfx[] = {
 	0x84, 0x00, 0x00, 0x01, 0x28, 0x00, // SET_INSTR
 	0x85, 0x6F, 0x80, 0x3F, // PLAY
@@ -34,67 +34,71 @@ typedef struct SPRITE {
 	signed char vv;
 } SPRITE;
 
-// setup a custom cartridge header
 SET_CART_INFO(
     BLOCKSIZE_256K,
-    "Lynx Example                   ",
-    "LLVM-MOS       ",
+    "My Cart                        ",
+    "My Mfr         ",
     1, 0);
 
 unsigned short lastJoy = 0;
-SPRITE *head = NULL;
-SPRITE *end = NULL;
 unsigned char refresh = 0;
 unsigned char sprctl0 = 0;
 unsigned char stats = 1;
-unsigned char count = 1;
+unsigned char count = 0;
+SPRITE sprites[64] = {};
 
-SPRITE* init_sprite()
+void segmentTest();
+void segmentTest2();
+
+void setup_sprites()
 {
-	SPRITE *spr = (SPRITE*)malloc(sizeof(SPRITE));
-    memset(spr, 0, sizeof(SPRITE));
-	spr->scb.sprctl0 = BPP_1 | (sprctl0 % 8);
-	spr->scb.sprctl1 = PACKED | REHV;
-	spr->scb.sprcoll = 0;
-	spr->scb.data = (unsigned char*)sprite;
-	spr->scb.hpos = rand() % 150;
-	spr->scb.vpos = rand() % 92;
-	spr->scb.hsize = 0x0100;
-	spr->scb.vsize = 0x0100;
-	spr->scb.penpal[0] = (rand()%14)+1;
-	spr->hv = 1;
-	spr->vv = 1;
-
-	if(end)
+	for(unsigned char i = 0; i < SPR_MAX; i++)
 	{
-		end->scb.next = (char*)spr;
-		end = spr;
-	}
+		sprites[i].scb.sprctl1 = SKIP;
 
-	return spr;
+		if(i == SPR_MAX-1)
+			sprites[i].scb.next = 0;
+		else
+			sprites[i].scb.next = (char*)&sprites[i+1];
+	}
 }
 
-void delete_sprite()
+void add_sprite()
 {
-	SPRITE *spr = head;
-	while( ((SPRITE*)spr->scb.next)->scb.next != 0)
-		spr = (SPRITE*)spr->scb.next;
+	if(count == SPR_MAX)
+		return;
 
-	free(spr->scb.next);
-	spr->scb.next = 0;
-	end = spr;
+	SPRITE* spr = &sprites[count];
+
+	sprites[count].scb.sprctl0 = BPP_1 | (sprctl0 % 8);
+	sprites[count].scb.sprctl1 = PACKED | REHV;
+	sprites[count].scb.sprcoll = 0;
+	sprites[count].scb.data = (unsigned char*)sprite;
+	sprites[count].scb.hpos = (rand() % 150);
+	sprites[count].scb.vpos = (rand() % 92);
+	sprites[count].scb.hsize = 0x0100;
+	sprites[count].scb.vsize = 0x0100;
+	sprites[count].scb.penpal[0] = (rand()%14)+1;
+	sprites[count].hv = 1;
+	sprites[count].vv = 1;
+
+	++count;
+}
+
+void remove_sprite()
+{
+	if(count == 1)
+		return;
+
+	--count;
+	sprites[count].scb.sprctl1 = SKIP;
 }
 
 void change_sprites()
 {
-	SPRITE *spr = head;
-	while(true)
+	for(unsigned char i = 0; i < SPR_MAX; i++)
 	{
-		spr->scb.sprctl0 = BPP_1 | (sprctl0 % 8);
-		if(spr->scb.next == 0)
-			break;
-
-		spr = (SPRITE*)spr->scb.next;
+		sprites[i].scb.sprctl0 = BPP_1 | (sprctl0 % 8);
 	}
 }
 
@@ -102,14 +106,12 @@ void handle_input(unsigned short joy)
 {
 	if(JOY_UP(joy) && !JOY_UP(lastJoy))
 	{
-		++count;
-		init_sprite();
+		add_sprite();
 	}
 
-	if(JOY_DOWN(joy) && !JOY_DOWN(lastJoy) && count > 1)
+	if(JOY_DOWN(joy) && !JOY_DOWN(lastJoy))
 	{
-		--count;
-		delete_sprite();
+		remove_sprite();
 	}
 
 	if(JOY_RIGHT(joy) && !JOY_RIGHT(lastJoy))
@@ -117,17 +119,15 @@ void handle_input(unsigned short joy)
 		unsigned char i;
 		for(i = 0; i < 5; i++)
 		{
-			++count;
-			init_sprite();
+			add_sprite();
 		}
 	}
-	else if(JOY_LEFT(joy) && !JOY_LEFT(lastJoy) && count > 5)
+	else if(JOY_LEFT(joy) && !JOY_LEFT(lastJoy))
 	{
 		unsigned char i;
 		for(i = 0; i < 5; i++)
 		{
-			--count;
-			delete_sprite();
+			remove_sprite();
 		}
 	}
 
@@ -135,6 +135,7 @@ void handle_input(unsigned short joy)
 	{
 		++sprctl0;
 		change_sprites();
+		segmentTest();
 	}
 
 	if(JOY_BTN_B(joy) && !JOY_BTN_B(lastJoy))
@@ -161,30 +162,34 @@ void handle_input(unsigned short joy)
 
 	if(JOY_BTN_OPT1(joy) && !JOY_BTN_OPT1(lastJoy))
     {
-        stats = !stats;
+		lynx_cart_load(2);
+		segmentTest2();
+        //stats = !stats;
     }
 
 	if(JOY_BTN_OPT2(joy) && !JOY_BTN_OPT2(lastJoy))
     {
-        lynx_audio_play(0, sfx);
+		lynx_cart_load(1);
+		segmentTest();
+
+        lynx_audio_play(3, sfx);
     }
 
 	lastJoy = joy;
 }
 
 int main()
-{
+{	
 	lynx_video_init();
 	lynx_video_setframerate(60);
 	asm("cli");
 	while (lynx_video_busy()) { }
 
 	lynx_audio_init();
-
-	head = init_sprite();
-	end = head;
-
 	lynx_video_setcolor(COLOR_BLUE);
+
+	setup_sprites();
+	add_sprite();
 
 	while(true)
 	{
@@ -194,32 +199,29 @@ int main()
 
 		if(!lynx_video_busy())
 		{
-			SPRITE *ptr = head;
-
 			lynx_video_clear();
 
-			while(true)
+			for(unsigned char i = 0; i < SPR_MAX; i++)
 			{
-				if(ptr->scb.hpos == SCREEN_W - SPR_W)
-					ptr->hv = -1;
-				else if(ptr->scb.hpos == 0)
-					ptr->hv = 1;
+				if(sprites[i].scb.hpos == SCREEN_W - SPR_W)
+					sprites[i].hv = -1;
+				else if(sprites[i].scb.hpos == 0)
+					sprites[i].hv = 1;
 
-				if(ptr->scb.vpos == SCREEN_H - SPR_H)
-					ptr->vv = -1;
-				else if(ptr->scb.vpos == 0)
-					ptr->vv = 1;
+				if(sprites[i].scb.vpos == SCREEN_H - SPR_H)
+					sprites[i].vv = -1;
+				else if(sprites[i].scb.vpos == 0)
+					sprites[i].vv = 1;
 
-				ptr->scb.hpos += ptr->hv;
-				ptr->scb.vpos += ptr->vv;
+				sprites[i].scb.hpos += sprites[i].hv;
+				sprites[i].scb.vpos += sprites[i].vv;
 
-				if(ptr->scb.next == 0)
+				if(sprites[i].scb.next == 0)
 					break;
-
-				ptr = (SPRITE*)ptr->scb.next;
 			}
 
-			lynx_video_sprite(head);
+			lynx_video_sprite(&sprites[0]);
+
 			if(stats)
 			{
 				switch(refresh%3)
@@ -267,4 +269,18 @@ int main()
 			lynx_video_updatedisplay();
 		}
 	}
+}
+
+START_SEGMENT(1)
+
+__attribute__((used, noinline)) void segmentTest()
+{
+	lynx_video_setcolor(COLOR_RED);
+}
+
+START_SEGMENT(2)
+
+__attribute__((noinline)) void segmentTest2()
+{
+	lynx_video_setcolor(COLOR_WHITE);
 }

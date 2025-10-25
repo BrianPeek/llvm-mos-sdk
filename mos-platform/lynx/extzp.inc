@@ -4,4 +4,7 @@
 ; information.
 
 .zeropage __iodat, __iodir, __viddma, __sprsys
-.zeropage _FileStartBlock, _FileBlockOffset, _FileExecFlag, _FileDestAddr, _FileFileLen, _FileCurrBlock, _FileBlockByte, _FileDestPtr
+.zeropage _FileCurrBlock, _FileBlockByte, _FileDestPtr
+
+; directory entry
+.zeropage _FileStartBlock, _FileBlockOffset, _FileExecFlag, _FileDestAddr, _FileFileLen
