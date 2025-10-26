@@ -278,9 +278,9 @@ __attribute__((used, noinline)) void segmentTest()
 	lynx_video_setcolor(COLOR_RED);
 }
 
-START_SEGMENT(2)
+START_SEGMENT_AT(2, 0x400)
 
-__attribute__((noinline)) void segmentTest2()
+__attribute__((used, noinline)) void segmentTest2()
 {
 	lynx_video_setcolor(COLOR_WHITE);
 }

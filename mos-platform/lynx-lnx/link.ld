@@ -30,6 +30,23 @@ PROVIDE(__cartend  = 48);
 PROVIDE(__cartname =  0);
 PROVIDE(__cartmfr  = 32);
 
+PROVIDE(__SEGMENTSTART1__  = 0x0200);
+PROVIDE(__SEGMENTSTART2__  = 0x0200);
+PROVIDE(__SEGMENTSTART3__  = 0x0200);
+PROVIDE(__SEGMENTSTART4__  = 0x0200);
+PROVIDE(__SEGMENTSTART5__  = 0x0200);
+PROVIDE(__SEGMENTSTART6__  = 0x0200);
+PROVIDE(__SEGMENTSTART7__  = 0x0200);
+PROVIDE(__SEGMENTSTART8__  = 0x0200);
+PROVIDE(__SEGMENTSTART9__  = 0x0200);
+PROVIDE(__SEGMENTSTART10__ = 0x0200);
+PROVIDE(__SEGMENTSTART11__ = 0x0200);
+PROVIDE(__SEGMENTSTART12__ = 0x0200);
+PROVIDE(__SEGMENTSTART13__ = 0x0200);
+PROVIDE(__SEGMENTSTART14__ = 0x0200);
+PROVIDE(__SEGMENTSTART15__ = 0x0200);
+
+
 /* ensure name and manufacturer are the correct lengths */
 ASSERT(__cartmfr - __cartname == 32,          "Cart name must be 31 characters")
 ASSERT(__cartend - __cartmfr  == 16,          "Cart manufacturer must be 15 characters")
@@ -59,21 +76,21 @@ MEMORY {
     directory (r)  : ORIGIN = __DIRECTORYSTART__,        LENGTH = __SEGMENTCOUNT__ * 8
     zp (rw)        : ORIGIN = __rc31 + 1,                LENGTH = 0x100 - (__rc31 + 1)
     ram (rw)       : ORIGIN = __CORESTART__,             LENGTH = __CORESIZE__
-    segment1 (rw)  : ORIGIN = __SEGMENTSTART__+0x010000, LENGTH = __SEGMENTSIZE__
-    segment2 (rw)  : ORIGIN = __SEGMENTSTART__+0x020000, LENGTH = __SEGMENTSIZE__
-    segment3 (rw)  : ORIGIN = __SEGMENTSTART__+0x030000, LENGTH = __SEGMENTSIZE__
-    segment4 (rw)  : ORIGIN = __SEGMENTSTART__+0x040000, LENGTH = __SEGMENTSIZE__
-    segment5 (rw)  : ORIGIN = __SEGMENTSTART__+0x050000, LENGTH = __SEGMENTSIZE__
-    segment6 (rw)  : ORIGIN = __SEGMENTSTART__+0x060000, LENGTH = __SEGMENTSIZE__
-    segment7 (rw)  : ORIGIN = __SEGMENTSTART__+0x070000, LENGTH = __SEGMENTSIZE__
-    segment8 (rw)  : ORIGIN = __SEGMENTSTART__+0x080000, LENGTH = __SEGMENTSIZE__
-    segment9 (rw)  : ORIGIN = __SEGMENTSTART__+0x090000, LENGTH = __SEGMENTSIZE__
-    segment10 (rw) : ORIGIN = __SEGMENTSTART__+0x0A0000, LENGTH = __SEGMENTSIZE__
-    segment11 (rw) : ORIGIN = __SEGMENTSTART__+0x0B0000, LENGTH = __SEGMENTSIZE__
-    segment12 (rw) : ORIGIN = __SEGMENTSTART__+0x0C0000, LENGTH = __SEGMENTSIZE__
-    segment13 (rw) : ORIGIN = __SEGMENTSTART__+0x0D0000, LENGTH = __SEGMENTSIZE__
-    segment14 (rw) : ORIGIN = __SEGMENTSTART__+0x0E0000, LENGTH = __SEGMENTSIZE__
-    segment15 (rw) : ORIGIN = __SEGMENTSTART__+0x0F0000, LENGTH = __SEGMENTSIZE__
+    segment1 (rw)  : ORIGIN = __SEGMENTSTART1__+0x010000, LENGTH = __SEGMENTSIZE__
+    segment2 (rw)  : ORIGIN = __SEGMENTSTART2__+0x020000, LENGTH = __SEGMENTSIZE__
+    segment3 (rw)  : ORIGIN = __SEGMENTSTART3__+0x030000, LENGTH = __SEGMENTSIZE__
+    segment4 (rw)  : ORIGIN = __SEGMENTSTART4__+0x040000, LENGTH = __SEGMENTSIZE__
+    segment5 (rw)  : ORIGIN = __SEGMENTSTART5__+0x050000, LENGTH = __SEGMENTSIZE__
+    segment6 (rw)  : ORIGIN = __SEGMENTSTART6__+0x060000, LENGTH = __SEGMENTSIZE__
+    segment7 (rw)  : ORIGIN = __SEGMENTSTART7__+0x070000, LENGTH = __SEGMENTSIZE__
+    segment8 (rw)  : ORIGIN = __SEGMENTSTART8__+0x080000, LENGTH = __SEGMENTSIZE__
+    segment9 (rw)  : ORIGIN = __SEGMENTSTART9__+0x090000, LENGTH = __SEGMENTSIZE__
+    segment10 (rw) : ORIGIN = __SEGMENTSTART10__+0x0A0000, LENGTH = __SEGMENTSIZE__
+    segment11 (rw) : ORIGIN = __SEGMENTSTART11__+0x0B0000, LENGTH = __SEGMENTSIZE__
+    segment12 (rw) : ORIGIN = __SEGMENTSTART12__+0x0C0000, LENGTH = __SEGMENTSIZE__
+    segment13 (rw) : ORIGIN = __SEGMENTSTART13__+0x0D0000, LENGTH = __SEGMENTSIZE__
+    segment14 (rw) : ORIGIN = __SEGMENTSTART14__+0x0E0000, LENGTH = __SEGMENTSIZE__
+    segment15 (rw) : ORIGIN = __SEGMENTSTART15__+0x0F0000, LENGTH = __SEGMENTSIZE__
 }
 
 REGION_ALIAS("c_readonly", ram)

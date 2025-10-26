@@ -212,11 +212,11 @@ lynx_cart_seek:
 
         ; calculate how many bytes to seek into the block
         pla
-        and #>(__BANK0BLOCKSIZE__-1)
+        and #>(__BLOCKSIZE__-1)
         eor #$ff
         tay
         pla
-        and #<(__BANK0BLOCKSIZE__-1)
+        and #<(__BLOCKSIZE__-1)
         eor #$ff
         tax
 

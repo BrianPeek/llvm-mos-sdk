@@ -17,6 +17,9 @@
 extern "C" {
 #endif
 
+/* Allow #pragma in a macro */
+#define DO_PRAGMA(x) _Pragma(#x)
+
 /* Color definitions */
 #define COLOR_TRANSPARENT       0x00
 #define COLOR_BLACK             0x01
@@ -53,7 +56,7 @@ extern "C" {
 #define BLOCKSIZE_512K  0x800
 
 #define _SET_CART_INFO_IMPL(b0, name, mfr, version, rotation) \
-    asm(".global __BANK0BLOCKSIZE__ \n __BANK0BLOCKSIZE__ = " #b0); \
+    asm(".global __BLOCKSIZE__ \n __BLOCKSIZE__ = " #b0); \
     asm(".global __VERSION__ \n __VERSION__ = " #version); \
     asm(".global __ROTATION__ \n __ROTATION__ = " #rotation); \
     asm(".global __cartend \n .global __cartmfr \n .global __cartname"); \
@@ -62,12 +65,15 @@ extern "C" {
 #define SET_CART_INFO(b0, name, mfr, version, rotation) \
     _SET_CART_INFO_IMPL(b0, name, mfr, version, rotation);
 
-#define DO_PRAGMA(x) _Pragma(#x)
 #define START_SEGMENT(n) DO_PRAGMA(clang section \
 	text=".segment" #n ".text" \
 	data=".segment" #n ".data" \
 	bss=".segment" #n ".bss" \
 	rodata=".segment" #n ".rodata")
+
+#define START_SEGMENT_AT(n, addr) \
+	START_SEGMENT(n); \
+	asm(".global __SEGMENTSTART" #n "__ \n" "__SEGMENTSTART" #n "__ = " #addr);
 
 #ifdef __cplusplus
 }
