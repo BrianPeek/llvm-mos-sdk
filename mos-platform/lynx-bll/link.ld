@@ -26,7 +26,20 @@ MEMORY {
 REGION_ALIAS("c_readonly", ram)
 REGION_ALIAS("c_writeable", ram)
 
-SECTIONS { INCLUDE c.ld }
+SECTIONS {
+    .text : {
+        INCLUDE text-sections.ld
+        KEEP(*(.irq_begin))
+        KEEP(*(SORT_BY_INIT_PRIORITY(.irq.* .irq)))
+        KEEP(*(.irq_end))
+    } >c_readonly
+
+    INCLUDE zp.ld
+    INCLUDE rodata.ld
+    INCLUDE data.ld
+    INCLUDE bss.ld
+    INCLUDE noinit.ld
+}
 
 /* Set initial soft stack address to just above last memory address. (It grows down.) */
 __stack = __hiram_start;

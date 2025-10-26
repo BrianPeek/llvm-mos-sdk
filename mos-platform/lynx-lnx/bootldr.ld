@@ -50,7 +50,7 @@ Originally from cc65. Modified from original version.
 ; A2 00            ldx #0          ; x = 0
 ; A0 97            ldy #$97        ; y = secondary loader size (151 bytes)
 ; AD B2 FC rloop1: lda RCART0      ; read a byte from the cart
-; 9D 68 FB         sta EXEX       ; EXE[X] = a
+; 9D 68 FB         sta EXE,X       ; EXE[X] = a
 ; E8               inx             ; x++
 ; 88               dey             ; y--
 ; D0 F6            bne rloop1      ; loops until y wraps

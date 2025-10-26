@@ -30,22 +30,22 @@ PROVIDE(__cartend  = 48);
 PROVIDE(__cartname =  0);
 PROVIDE(__cartmfr  = 32);
 
-PROVIDE(__SEGMENTSTART1__  = 0x0200);
-PROVIDE(__SEGMENTSTART2__  = 0x0200);
-PROVIDE(__SEGMENTSTART3__  = 0x0200);
-PROVIDE(__SEGMENTSTART4__  = 0x0200);
-PROVIDE(__SEGMENTSTART5__  = 0x0200);
-PROVIDE(__SEGMENTSTART6__  = 0x0200);
-PROVIDE(__SEGMENTSTART7__  = 0x0200);
-PROVIDE(__SEGMENTSTART8__  = 0x0200);
-PROVIDE(__SEGMENTSTART9__  = 0x0200);
-PROVIDE(__SEGMENTSTART10__ = 0x0200);
-PROVIDE(__SEGMENTSTART11__ = 0x0200);
-PROVIDE(__SEGMENTSTART12__ = 0x0200);
-PROVIDE(__SEGMENTSTART13__ = 0x0200);
-PROVIDE(__SEGMENTSTART14__ = 0x0200);
-PROVIDE(__SEGMENTSTART15__ = 0x0200);
-
+/* default segment start addresses */
+PROVIDE(__SEGMENTSTART1__  = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART2__  = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART3__  = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART4__  = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART5__  = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART6__  = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART7__  = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART8__  = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART9__  = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART10__ = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART11__ = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART12__ = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART13__ = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART14__ = __SEGMENTSTART__);
+PROVIDE(__SEGMENTSTART15__ = __SEGMENTSTART__);
 
 /* ensure name and manufacturer are the correct lengths */
 ASSERT(__cartmfr - __cartname == 32,          "Cart name must be 31 characters")
@@ -53,38 +53,38 @@ ASSERT(__cartend - __cartmfr  == 16,          "Cart manufacturer must be 15 char
 ASSERT(__ROTATION__ >=0 && __ROTATION__ <= 2, "Invalid rotation value")
 ASSERT(SIZEOF(.secbootldr) == 151,            "Secondary bootloader is not 151 bytes")
 ASSERT(SIZEOF(.directory) % 8 == 0,           "Directory is not a multiple of 8 bytes")
-ASSERT(SIZEOF(.segment1)  <= __SEGMENTSIZE__,    "Segment 1 is larger than the available bank size")
-ASSERT(SIZEOF(.segment2)  <= __SEGMENTSIZE__,    "Segment 2 is larger than the available bank size")
-ASSERT(SIZEOF(.segment3)  <= __SEGMENTSIZE__,    "Segment 3 is larger than the available bank size")
-ASSERT(SIZEOF(.segment4)  <= __SEGMENTSIZE__,    "Segment 4 is larger than the available bank size")
-ASSERT(SIZEOF(.segment5)  <= __SEGMENTSIZE__,    "Segment 5 is larger than the available bank size")
-ASSERT(SIZEOF(.segment6)  <= __SEGMENTSIZE__,    "Segment 6 is larger than the available bank size")
-ASSERT(SIZEOF(.segment7)  <= __SEGMENTSIZE__,    "Segment 7 is larger than the available bank size")
-ASSERT(SIZEOF(.segment8)  <= __SEGMENTSIZE__,    "Segment 8 is larger than the available bank size")
-ASSERT(SIZEOF(.segment9)  <= __SEGMENTSIZE__,    "Segment 9 is larger than the available bank size")
-ASSERT(SIZEOF(.segment10) <= __SEGMENTSIZE__,    "Segment 10 is larger than the available bank size")
-ASSERT(SIZEOF(.segment11) <= __SEGMENTSIZE__,    "Segment 11 is larger than the available bank size")
-ASSERT(SIZEOF(.segment12) <= __SEGMENTSIZE__,    "Segment 12 is larger than the available bank size")
-ASSERT(SIZEOF(.segment13) <= __SEGMENTSIZE__,    "Segment 13 is larger than the available bank size")
-ASSERT(SIZEOF(.segment14) <= __SEGMENTSIZE__,    "Segment 14 is larger than the available bank size")
-ASSERT(SIZEOF(.segment15) <= __SEGMENTSIZE__,    "Segment 15 is larger than the available bank size")
+ASSERT(SIZEOF(.segment1)  <= __SEGMENTSIZE__, "Segment 1 is larger than the available bank size")
+ASSERT(SIZEOF(.segment2)  <= __SEGMENTSIZE__, "Segment 2 is larger than the available bank size")
+ASSERT(SIZEOF(.segment3)  <= __SEGMENTSIZE__, "Segment 3 is larger than the available bank size")
+ASSERT(SIZEOF(.segment4)  <= __SEGMENTSIZE__, "Segment 4 is larger than the available bank size")
+ASSERT(SIZEOF(.segment5)  <= __SEGMENTSIZE__, "Segment 5 is larger than the available bank size")
+ASSERT(SIZEOF(.segment6)  <= __SEGMENTSIZE__, "Segment 6 is larger than the available bank size")
+ASSERT(SIZEOF(.segment7)  <= __SEGMENTSIZE__, "Segment 7 is larger than the available bank size")
+ASSERT(SIZEOF(.segment8)  <= __SEGMENTSIZE__, "Segment 8 is larger than the available bank size")
+ASSERT(SIZEOF(.segment9)  <= __SEGMENTSIZE__, "Segment 9 is larger than the available bank size")
+ASSERT(SIZEOF(.segment10) <= __SEGMENTSIZE__, "Segment 10 is larger than the available bank size")
+ASSERT(SIZEOF(.segment11) <= __SEGMENTSIZE__, "Segment 11 is larger than the available bank size")
+ASSERT(SIZEOF(.segment12) <= __SEGMENTSIZE__, "Segment 12 is larger than the available bank size")
+ASSERT(SIZEOF(.segment13) <= __SEGMENTSIZE__, "Segment 13 is larger than the available bank size")
+ASSERT(SIZEOF(.segment14) <= __SEGMENTSIZE__, "Segment 14 is larger than the available bank size")
+ASSERT(SIZEOF(.segment15) <= __SEGMENTSIZE__, "Segment 15 is larger than the available bank size")
 
 MEMORY {
-    lnxheader (r)  : ORIGIN = 0x10000,                   LENGTH = 64
-    bootldr (r)  :   ORIGIN = 0x10040,                   LENGTH = __BOOTLDRSIZE__
-    secbootldr (r) : ORIGIN = 0xfb68,                    LENGTH = SIZEOF(.secbootldr)
-    directory (r)  : ORIGIN = __DIRECTORYSTART__,        LENGTH = __SEGMENTCOUNT__ * 8
-    zp (rw)        : ORIGIN = __rc31 + 1,                LENGTH = 0x100 - (__rc31 + 1)
-    ram (rw)       : ORIGIN = __CORESTART__,             LENGTH = __CORESIZE__
-    segment1 (rw)  : ORIGIN = __SEGMENTSTART1__+0x010000, LENGTH = __SEGMENTSIZE__
-    segment2 (rw)  : ORIGIN = __SEGMENTSTART2__+0x020000, LENGTH = __SEGMENTSIZE__
-    segment3 (rw)  : ORIGIN = __SEGMENTSTART3__+0x030000, LENGTH = __SEGMENTSIZE__
-    segment4 (rw)  : ORIGIN = __SEGMENTSTART4__+0x040000, LENGTH = __SEGMENTSIZE__
-    segment5 (rw)  : ORIGIN = __SEGMENTSTART5__+0x050000, LENGTH = __SEGMENTSIZE__
-    segment6 (rw)  : ORIGIN = __SEGMENTSTART6__+0x060000, LENGTH = __SEGMENTSIZE__
-    segment7 (rw)  : ORIGIN = __SEGMENTSTART7__+0x070000, LENGTH = __SEGMENTSIZE__
-    segment8 (rw)  : ORIGIN = __SEGMENTSTART8__+0x080000, LENGTH = __SEGMENTSIZE__
-    segment9 (rw)  : ORIGIN = __SEGMENTSTART9__+0x090000, LENGTH = __SEGMENTSIZE__
+    lnxheader (r)  : ORIGIN = 0x10000,                     LENGTH = 64
+    bootldr (r)  :   ORIGIN = 0x10040,                     LENGTH = __BOOTLDRSIZE__
+    secbootldr (r) : ORIGIN = 0xfb68,                      LENGTH = SIZEOF(.secbootldr)
+    directory (r)  : ORIGIN = __DIRECTORYSTART__,          LENGTH = __SEGMENTCOUNT__ * 8
+    zp (rw)        : ORIGIN = __rc31 + 1,                  LENGTH = 0x100 - (__rc31 + 1)
+    ram (rw)       : ORIGIN = __CORESTART__,               LENGTH = __CORESIZE__
+    segment1 (rw)  : ORIGIN = __SEGMENTSTART1__ +0x010000, LENGTH = __SEGMENTSIZE__
+    segment2 (rw)  : ORIGIN = __SEGMENTSTART2__ +0x020000, LENGTH = __SEGMENTSIZE__
+    segment3 (rw)  : ORIGIN = __SEGMENTSTART3__ +0x030000, LENGTH = __SEGMENTSIZE__
+    segment4 (rw)  : ORIGIN = __SEGMENTSTART4__ +0x040000, LENGTH = __SEGMENTSIZE__
+    segment5 (rw)  : ORIGIN = __SEGMENTSTART5__ +0x050000, LENGTH = __SEGMENTSIZE__
+    segment6 (rw)  : ORIGIN = __SEGMENTSTART6__ +0x060000, LENGTH = __SEGMENTSIZE__
+    segment7 (rw)  : ORIGIN = __SEGMENTSTART7__ +0x070000, LENGTH = __SEGMENTSIZE__
+    segment8 (rw)  : ORIGIN = __SEGMENTSTART8__ +0x080000, LENGTH = __SEGMENTSIZE__
+    segment9 (rw)  : ORIGIN = __SEGMENTSTART9__ +0x090000, LENGTH = __SEGMENTSIZE__
     segment10 (rw) : ORIGIN = __SEGMENTSTART10__+0x0A0000, LENGTH = __SEGMENTSIZE__
     segment11 (rw) : ORIGIN = __SEGMENTSTART11__+0x0B0000, LENGTH = __SEGMENTSIZE__
     segment12 (rw) : ORIGIN = __SEGMENTSTART12__+0x0C0000, LENGTH = __SEGMENTSIZE__
@@ -132,15 +132,15 @@ SECTIONS {
     INCLUDE bss.ld
     INCLUDE noinit.ld
 
-    .segment1 :  { KEEP(*(.segment1  .segment1.*)) }  >segment1
-    .segment2 :  { KEEP(*(.segment2  .segment2.*)) }  >segment2
-    .segment3 :  { KEEP(*(.segment3  .segment3.*)) }  >segment3
-    .segment4 :  { KEEP(*(.segment4  .segment4.*)) }  >segment4
-    .segment5 :  { KEEP(*(.segment5  .segment5.*)) }  >segment5
-    .segment6 :  { KEEP(*(.segment6  .segment6.*)) }  >segment6
-    .segment7 :  { KEEP(*(.segment7  .segment7.*)) }  >segment7
-    .segment8 :  { KEEP(*(.segment8  .segment8.*)) }  >segment8
-    .segment9 :  { KEEP(*(.segment9  .segment9.*)) }  >segment9
+    .segment1  : { KEEP(*(.segment1  .segment1.*)) }  >segment1
+    .segment2  : { KEEP(*(.segment2  .segment2.*)) }  >segment2
+    .segment3  : { KEEP(*(.segment3  .segment3.*)) }  >segment3
+    .segment4  : { KEEP(*(.segment4  .segment4.*)) }  >segment4
+    .segment5  : { KEEP(*(.segment5  .segment5.*)) }  >segment5
+    .segment6  : { KEEP(*(.segment6  .segment6.*)) }  >segment6
+    .segment7  : { KEEP(*(.segment7  .segment7.*)) }  >segment7
+    .segment8  : { KEEP(*(.segment8  .segment8.*)) }  >segment8
+    .segment9  : { KEEP(*(.segment9  .segment9.*)) }  >segment9
     .segment10 : { KEEP(*(.segment10 .segment10.*)) } >segment10
     .segment11 : { KEEP(*(.segment11 .segment11.*)) } >segment11
     .segment12 : { KEEP(*(.segment12 .segment12.*)) } >segment12

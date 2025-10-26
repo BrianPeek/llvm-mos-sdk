@@ -21,7 +21,7 @@ add_platform_object_file(lynx-crt0-o
   crt0.o
   crt0/crt0.S
   crt0/lynx-crt0.c
-  crt0/bootldr.S)
+  crt0/secbootldr.S)
 
 add_platform_library(lynx-crt0)
 merge_libraries(lynx-crt0

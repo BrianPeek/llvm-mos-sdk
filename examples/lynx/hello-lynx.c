@@ -45,7 +45,7 @@ unsigned char refresh = 0;
 unsigned char sprctl0 = 0;
 unsigned char stats = 1;
 unsigned char count = 0;
-SPRITE sprites[64] = {};
+SPRITE sprites[64];
 
 void segmentTest();
 void segmentTest2();
