@@ -126,9 +126,9 @@ SECTIONS {
         KEEP(*(.irq_end))
     } >c_readonly
 
-    INCLUDE zp.ld
     INCLUDE rodata.ld
     INCLUDE data.ld
+    INCLUDE zp.ld
     INCLUDE bss.ld
     INCLUDE noinit.ld
 
