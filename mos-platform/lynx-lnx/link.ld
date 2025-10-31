@@ -14,7 +14,7 @@ __BLOCK0SHIFTER__  = (__BLOCKSIZE__/1024 + 9);
 __DIRECTORYSTART__ = __BOOTLDRSIZE__ + SIZEOF(.secbootldr); /* Start address of directory, exists on cart only */
 __STACKSTART__     = __VIDEOSTART__ - __STACKSIZE__; /* Start (really end) address of the stack */
 __CORESTART__      = __STACKSTART__ - __CORESIZE__; /* put the resident/non-banked segment right below the stack */
-__CORESIZE__       = SIZEOF(.text) + SIZEOF(.data) + SIZEOF(.rodata) + SIZEOF(.bss) + SIZEOF(.zp.data); /* size of the resident/non-banked segment */
+__CORESIZE__       = SIZEOF(.text) + SIZEOF(.data) + SIZEOF(.rodata) + SIZEOF(.bss) + SIZEOF(.zp.data) + SIZEOF(.zp.bss); /* size of the resident/non-banked segment */
 __SEGMENTSIZE__    = __CORESTART__ - __SEGMENTSTART__;  /* size of the banked segments, which is all the space from the bank start to the resident start */
 
 PROVIDE(__SEGMENTCOUNT__ = 16);     /* Default to 16 file entries in the directory */
@@ -71,9 +71,9 @@ ASSERT(SIZEOF(.segment15) <= __SEGMENTSIZE__, "Segment 15 is larger than the ava
 
 MEMORY {
     lnxheader (r)  : ORIGIN = 0x10000,                     LENGTH = 64
-    bootldr (r)  :   ORIGIN = 0x10040,                     LENGTH = __BOOTLDRSIZE__
+    bootldr (r)  :   ORIGIN = 0x10100,                     LENGTH = __BOOTLDRSIZE__
     secbootldr (r) : ORIGIN = 0xfb68,                      LENGTH = SIZEOF(.secbootldr)
-    directory (r)  : ORIGIN = __DIRECTORYSTART__,          LENGTH = __SEGMENTCOUNT__ * 8
+    directory (r)  : ORIGIN = 0x10200,                     LENGTH = __SEGMENTCOUNT__ * 8
     zp (rw)        : ORIGIN = __rc31 + 1,                  LENGTH = 0x100 - (__rc31 + 1)
     ram (rw)       : ORIGIN = __CORESTART__,               LENGTH = __CORESIZE__
     segment1 (rw)  : ORIGIN = __SEGMENTSTART1__ +0x010000, LENGTH = __SEGMENTSIZE__
