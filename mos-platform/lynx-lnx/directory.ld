@@ -16,8 +16,8 @@ information.
 */
 
 /* Segment 0 contains all the resident/non-swappped code */
-BYTE ((ADDR(.directory) + SIZEOF(.directory)) / (__BLOCKSIZE__))
-SHORT((ADDR(.directory) + SIZEOF(.directory)) & (__BLOCKSIZE__ - 1))
+BYTE ((__DIRECTORYSTART__ + SIZEOF(.directory)) / (__BLOCKSIZE__))
+SHORT((__DIRECTORYSTART__ + SIZEOF(.directory)) & (__BLOCKSIZE__ - 1))
 BYTE(0x88)
 SHORT(ADDR(.text))
 SHORT(ADDR(.bss) - ADDR(.text))
