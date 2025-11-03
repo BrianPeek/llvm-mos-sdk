@@ -70,10 +70,10 @@ ASSERT(SIZEOF(.segment14) <= __SEGMENTSIZE__, "Segment 14 is larger than the ava
 ASSERT(SIZEOF(.segment15) <= __SEGMENTSIZE__, "Segment 15 is larger than the available bank size")
 
 MEMORY {
-    lnxheader (r)  : ORIGIN = 0x10000,                     LENGTH = 64
-    bootldr (r)  :   ORIGIN = 0x10100,                     LENGTH = __BOOTLDRSIZE__
+    lnxheader (r)  : ORIGIN = 0xFF0000,                    LENGTH = 64
+    bootldr (r)  :   ORIGIN = 0xFF0100,                    LENGTH = __BOOTLDRSIZE__
     secbootldr (r) : ORIGIN = 0xfb68,                      LENGTH = SIZEOF(.secbootldr)
-    directory (r)  : ORIGIN = 0x10200,                     LENGTH = __SEGMENTCOUNT__ * 8
+    directory (r)  : ORIGIN = 0xFF0200,                    LENGTH = __SEGMENTCOUNT__ * 8
     zp (rw)        : ORIGIN = __rc31 + 1,                  LENGTH = 0x100 - (__rc31 + 1)
     ram (rw)       : ORIGIN = __CORESTART__,               LENGTH = __CORESIZE__
     segment1 (rw)  : ORIGIN = __SEGMENTSTART1__ +0x010000, LENGTH = __SEGMENTSIZE__
