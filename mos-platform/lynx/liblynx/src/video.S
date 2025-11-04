@@ -351,7 +351,7 @@ lynx_video_setpalette:
         rts
 
 ; ------------------------------------------------------------------------
-; lynx_video_getpalette: Return the current palette in A/X.
+; lynx_video_getpalette: Return the current palette in __rc2/3
 ;
 
 .global lynx_video_getpalette
@@ -363,7 +363,7 @@ lynx_video_getpalette:
         rts
 
 ; ------------------------------------------------------------------------
-; lynx_video_getdefpalette: Return the default palette in A/X.
+; lynx_video_getdefpalette: Return the default palette in __rc2/3
 ;
 
 .global lynx_video_getdefpalette
