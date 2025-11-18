@@ -49,6 +49,7 @@ SPRITE sprites[64];
 
 void segmentTest();
 void segmentTest2();
+char *itoa(int value, char *str);
 
 void setup_sprites()
 {
@@ -188,6 +189,8 @@ int main()
 	lynx_audio_init();
 	lynx_video_setcolor(COLOR_BLUE);
 
+	lynx_clock_init();
+
 	setup_sprites();
 	add_sprite();
 
@@ -266,6 +269,11 @@ int main()
 				}
 			}
 
+			static char buff[10];
+			unsigned long ticks = lynx_clock_getticks();
+			itoa(ticks, buff);
+			lynx_video_outtextxy(0,10,buff);
+
 			lynx_video_updatedisplay();
 		}
 	}
@@ -283,4 +291,40 @@ START_SEGMENT_AT(2, 0x400)
 __attribute__((used, noinline)) void segmentTest2()
 {
 	lynx_video_setcolor(COLOR_WHITE);
+}
+
+char *itoa(int value, char *str)
+{
+    char *p = str;
+    int is_negative = 0;
+
+    if (value == 0) {
+        str[0] = '0';
+        str[1] = '\0';
+        return str;
+    }
+
+    if (value < 0) {
+        is_negative = 1;
+        value = -value;
+    }
+
+    while (value > 0) {
+        *p++ = (value % 10) + '0';
+        value /= 10;
+    }
+
+    if (is_negative)
+        *p++ = '-';
+
+    *p = '\0';
+
+    // reverse string
+    for (char *start = str, *end = p - 1; start < end; start++, end--) {
+        char temp = *start;
+        *start = *end;
+        *end = temp;
+    }
+
+    return str;
 }

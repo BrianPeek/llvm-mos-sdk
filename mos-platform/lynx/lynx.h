@@ -10,6 +10,8 @@
 
 #include "audio.h"
 #include "cart.h"
+#include "clock.h"
+#include "eeprom.h"
 #include "joystick.h"
 #include "video.h"
 

@@ -8,6 +8,10 @@
 #ifndef _EEPROM_H
 #define _EEPROM_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
  /* Read a 16 bit word from the given address */
 unsigned short lynx_eeprom_read(unsigned char cell);
 
@@ -16,5 +20,9 @@ void lynx_eeprom_write(unsigned char cell, unsigned short val);
 
 /* Clear the word at the given address */
 void lynx_eeprom_erase(unsigned char cell);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
