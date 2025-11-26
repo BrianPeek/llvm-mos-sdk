@@ -5,7 +5,7 @@
 
 ; Originally from cc65. Modified from original version.
 
-.include        "lynx.inc"
+.include "lynx.inc"
 
 .bss
 clock_count:        .space    3
@@ -13,7 +13,7 @@ clock_count:        .space    3
 .text
 
 ;-----------------------------------------------------------------------------
-; Enable the interrupt that update_clock needs.
+; Enable the interrupt that clock needs.
 ;
 .global lynx_clock_init
 lynx_clock_init:
